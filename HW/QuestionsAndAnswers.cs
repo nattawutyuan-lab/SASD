@@ -1,0 +1,85 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Refactoring101
+{
+    // คลาสสำหรับเก็บค่าคงที่ (แก้ปัญหา Shotgun Surgery)
+    public static class Config
+    {
+        public const int TotalStudents = 48;
+    }
+
+    // คลาส Date ใหม่ (แก้ปัญหา Data Clump)
+    public class Date
+    {
+        public int Day { get; set; }
+        public int Month { get; set; }
+        public int Year { get; set; }
+
+        public Date(int day, int month, int year)
+        {
+            Day = day;
+            Month = month;
+            Year = year;
+        }
+
+        // ย้าย Logic การแสดงผลมาไว้ที่เจ้าของข้อมูล (แก้ปัญหา Feature Envy)
+        public string Format()
+        {
+            return $"{Day:00}/{Month:00}/{Year:0000}";
+        }
+    }
+
+    public class QuestionsAndAnswers
+    {
+        // 1. Mysterious Name -> เปลี่ยนชื่อให้สื่อความหมาย (Rename Method & Variable)
+        public double Max(double val1, double val2)
+        {
+            return val1 > val2 ? val1 : val2;
+        }
+
+        // 2. Duplicate Code -> แยกส่วนที่ซ้ำออกมา (Extract Method)
+        public void Print()
+        {
+            PrintPerson("Mr.Harry Potter");
+            PrintPerson("Ms.Mary Poppin");
+            PrintPerson("Mr.Johny Black");
+        }
+
+        private void PrintPerson(string name)
+        {
+            Console.WriteLine("***********************");
+            Console.WriteLine("   " + name);
+            Console.WriteLine("***********************");
+            Console.WriteLine();
+        }
+
+        // 3. Shotgun Surgery -> เรียกใช้ค่าคงที่จากคลาสกลาง
+        public class Shotgun1
+        {
+            public void DisplayStudents()
+            {
+                // ใช้ค่าจาก Config แทนตัวเลข 48
+                Console.WriteLine("Student Count = " + Config.TotalStudents);
+            }
+        }
+        public class Shotgun2
+        {
+            public void PrintTotal()
+            {
+                // ใช้ค่าจาก Config แทนตัวเลข 48
+                Console.WriteLine("Total Students : " + Config.TotalStudents);
+            }
+        }
+
+        // 4. Data Clump & 5. Feature Envy
+        // เปลี่ยน Parameter เป็น Object และเรียกใช้ Method ของ Object นั้น
+        public void PrintDate(Date date)
+        {
+            Console.WriteLine(date.Format());
+        }
+    }
+}
